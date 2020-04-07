@@ -30,3 +30,6 @@ read_globals = {
 		}
 	},
 } 
+globals = {
+	"tower_defense",
+}
