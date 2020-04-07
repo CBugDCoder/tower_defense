@@ -58,14 +58,16 @@ local function get_target(pos,flag)
 	end
 end
 
-local function aim_and_fire(self,target)
-	if target then
+local function fire(self,target)
+	
+end
+
+local function aim(self)
+	if self._target then
 		local pos = self.object:get_pos()
-		local yaw = math.atan2(target.x-pos.x,target.z-pos.z)
-		local a,b = self.object:get_bone_position("Cannon")
-		print(dump(a))
-		print(dump(b))
-		self.object:set_bone_position("Cannon", {x=0,y=6.5,z=0}, {x=0,y=0, z=yaw})
+		local rot = self.object:get_rotation()
+		local yaw = (rot.y-math.atan2(self._target.x-pos.x,pos.z-self._target.z))*180/math.pi+180
+		self.object:set_bone_position("Cannon", {x=0,y=6.5,z=0}, {x=0,y=yaw, z=0})
 	else
 		self.object:set_bone_position("Cannon", {x=0,z=0,y=6.5}, {z=0,x=0,y=0})
 	end
@@ -91,13 +93,16 @@ local function tank_on_step(self, dtime)
 	if self._timer >= 1 then
 		self._timer = self._timer-1
 		local target = get_target(pos,flag)
-		aim_and_fire(self,target)
+		self._target = target
+		fire(self,target)
 	end
+	aim(self)
 end
 
 local function tank_on_activate(self, staticdata)
 	self._game_id = tonumber(staticdata)
 	self.object:set_acceleration({x=0,y=-9.8,z=0})
+	self.object:set_animation({x=1,y=40})
 end
 
 minetest.register_entity("tower_defense:tank_lvl_1", {
@@ -116,4 +121,5 @@ minetest.register_entity("tower_defense:tank_lvl_1", {
 	_level = 1,
 	_timer = 0,
 	_is_tank = true,
+	_target = nil,
 })
