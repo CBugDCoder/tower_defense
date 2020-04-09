@@ -16,18 +16,6 @@ local function get_closest_flag(pos,flags)
 	return flags[idx], min_dist
 end
 
-function tower_defense.get_tanks_in_game(game_id)
-	local base_pos = tower_defense.games[game_id].base_pos
-	local objects = minetest.get_objects_inside_radius(base_pos,150)
-	local count = 0
-	for _,object in ipairs(objects) do
-		if object and object:get_luaentity() and object:get_luaentity()._is_tank then
-			count = count + 1
-		end
-	end
-	return count
-end
-
 local function get_target(pos,flag)
 	if vector.distance(pos,flag) < 20 then
 		local can_see, blocker = minetest.line_of_sight(pos,flag)

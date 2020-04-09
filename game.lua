@@ -40,14 +40,15 @@ end
 
 local function generate_game(game_id)
 	local midp = tower_defense.games[game_id].base_pos
-	local minp = vector.new(midp.x-100,midp.y-20,midp.z-100)
-	local maxp = vector.new(midp.x+100,midp.y+60,midp.z+100)
+	local minp = vector.new(midp.x-50,midp.y-10,midp.z-50)
+	local maxp = vector.new(midp.x+50,midp.y+50,midp.z+50)
 	local vm = VoxelManip()
 	local emin, emax = vm:read_from_map(minp,maxp)
 	local area = VoxelArea:new{MinEdge = emin, MaxEdge = emax}
 	local data = vm:get_data()
-	local c_stone = minetest.get_content_id("tower_defense:stone")
-	local c_sand = minetest.get_content_id("tower_defense:sand")
+	local c_ystone = minetest.get_content_id("tower_defense:yellow_stone")
+	local c_rstone = minetest.get_content_id("tower_defense:red_stone")
+	local stones = {c_ystone,c_rstone}
 	local c_barrier = minetest.get_content_id("tower_defense:barrier")
 	local c_flag = minetest.get_content_id("tower_defense:flag")
 	local c_air = minetest.get_content_id("air")
@@ -56,9 +57,13 @@ local function generate_game(game_id)
 			for x = minp.x,maxp.x do
 				local vi = area:index(x,y,z)
 				if y == midp.y then
-					data[vi] = c_sand
+					if (x < midp.x+10 and x > midp.x-10) and (z < midp.z+10 and z > midp.z-10) then
+						data[vi] = c_ystone
+					else
+						data[vi] = stones[math.random(1,2)]
+					end
 				elseif y < midp.y then
-					data[vi] = c_stone
+					data[vi] = c_ystone
 				elseif y == maxp.y or x == minp.x or z == minp.z or x == maxp.x or z == maxp.z then
 					data[vi] = c_barrier
 				else
@@ -90,7 +95,7 @@ function tower_defense.new_game(map_type)
 	storage:set_int("last_game", id)
 	if map_type == "random" or map_type == nil then
 		game.flags = {}
-		game.flags[1] = {x=math.random(-20,20),y=1,z=math.random(-20,20)}
+		game.flags[1] = {x=math.random(-10,10),y=1,z=math.random(-10,10)}
 	end
 	game.cash = 10000
 	game.state = "generating"
@@ -100,8 +105,8 @@ function tower_defense.new_game(map_type)
 	print(dump(game))
 	tower_defense.games[id] = game
 	minetest.emerge_area(
-		vector.new(game.base_pos.x-100,game.base_pos.y-100,game.base_pos.z-100),
-		vector.new(game.base_pos.x-100,game.base_pos.y-100,game.base_pos.z-100),
+		vector.new(game.base_pos.x-50,game.base_pos.y-50,game.base_pos.z-50),
+		vector.new(game.base_pos.x-50,game.base_pos.y-50,game.base_pos.z-50),
 		game_emerge_generate,
 		id
 	)
@@ -232,20 +237,20 @@ local function start_wave(game_id)
 			local axis = math.random(1,4)
 			local pos
 			if axis == 1 then
-				local x = math.random(-90,90)
-				local z = math.random(-90,-50)
+				local x = math.random(-45,45)
+				local z = math.random(-45,-20)
 				pos = {x=x,y=1,z=z}
 			elseif axis == 2 then
-				local x = math.random(-90,-50)
-				local z = math.random(-90,90)
+				local x = math.random(-45,-20)
+				local z = math.random(-45,45)
 				pos = {x=x,y=1,z=z}
 			elseif axis == 3 then
-				local x = math.random(-90,90)
-				local z = math.random(50,90)
+				local x = math.random(-45,45)
+				local z = math.random(20,45)
 				pos = {x=x,y=1,z=z}
 			else
-				local x = math.random(50,90)
-				local z = math.random(-90,90)
+				local x = math.random(20,45)
+				local z = math.random(-45,45)
 				pos = {x=x,y=1,z=z}
 			end
 			minetest.add_entity(
@@ -257,6 +262,18 @@ local function start_wave(game_id)
 	end
 
 	tower_defense.games[game_id].state = "wave"
+end
+
+function tower_defense.get_tanks_in_game(game_id)
+	local base_pos = tower_defense.games[game_id].base_pos
+	local objects = minetest.get_objects_inside_radius(base_pos,100)
+	local count = 0
+	for _,object in ipairs(objects) do
+		if object and object:get_luaentity() and object:get_luaentity()._is_tank then
+			count = count + 1
+		end
+	end
+	return count
 end
 
 minetest.register_on_joinplayer(function(player)

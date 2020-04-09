@@ -5,15 +5,15 @@
 ---------------
 
 --Stone
-minetest.register_node("tower_defense:stone", {
-	tiles = {"default_stone.png"},
+minetest.register_node("tower_defense:red_stone", {
+	tiles = {"tower_defense_red_stone.png"},
 	description = "Unbreakable stone for TD games",
 	groups = {not_in_creative_inventory = 1, unbreakable = 1},
 })
 
 --Sand
-minetest.register_node("tower_defense:sand", {
-	tiles = {"default_sand.png"},
+minetest.register_node("tower_defense:yellow_stone", {
+	tiles = {"tower_defense_yellow_stone.png"},
 	description = "Unbreakable sand for TD games",
 	groups = {not_in_creative_inventory = 1, unbreakable = 1},
 })
