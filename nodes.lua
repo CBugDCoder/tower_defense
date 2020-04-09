@@ -31,7 +31,18 @@ minetest.register_node("tower_defense:barrier", {
 minetest.register_node("tower_defense:flag", {
 	tiles = {"default_dirt.png"},
 	description = "Flag",
-	groups = {not_in_creative_inventory = 1, unbreakable = 1, health = 500}
+	groups = {not_in_creative_inventory = 1, unbreakable = 1, health = 1000}
+})
+
+
+
+------------------
+----Barricades----
+------------------
+minetest.register_node("tower_defense:wooden_barricade",{
+	description = "Wooden Barricade",
+	tiles = {"default_wood.png"},
+	groups = {not_in_creative_inventory = 1, oddly_breakable_by_hand = 3, health = 50}
 })
 
 
