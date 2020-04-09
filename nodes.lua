@@ -45,13 +45,21 @@ minetest.register_node("tower_defense:wooden_barricade",{
 	groups = {not_in_creative_inventory = 1, oddly_breakable_by_hand = 3, health = 50}
 })
 
-
-
--------------
----Turrets---
--------------
-minetest.register_node("tower_defense:rifle_turret", {
-	tiles = {"default_grass.png"},
-	description = "Rifle Turret",
-	groups = {not_in_creative_inventory = 1, oddly_breakable_by_hand = 3, health = 40, turret = 1}
+minetest.register_node("tower_defense:stone_barricade",{
+	description = "Stone Barricade",
+	tiles = {"default_wood.png"},
+	groups = {not_in_creative_inventory = 1, oddly_breakable_by_hand = 3, health = 100}
 })
+
+minetest.register_node("tower_defense:steel_barricade",{
+	description = "Steel Barricade",
+	tiles = {"default_wood.png"},
+	groups = {not_in_creative_inventory = 1, oddly_breakable_by_hand = 3, health = 250}
+})
+
+minetest.register_node("tower_defense:obsidian_barricade",{
+	description = "Obsidian Barricade",
+	tiles = {"default_wood.png"},
+	groups = {not_in_creative_inventory = 1, oddly_breakable_by_hand = 3, health = 500}
+})
+

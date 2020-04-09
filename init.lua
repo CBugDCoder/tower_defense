@@ -4,6 +4,8 @@ tower_defense = {}
 
 dofile(path .. "/game.lua")
 dofile(path .. "/nodes.lua")
+dofile(path .. "/turrets.lua")
+dofile(path .. "/explosions.lua")
 dofile(path .. "/hud.lua")
 dofile(path .. "/shop.lua")
 dofile(path .. "/tanks.lua")

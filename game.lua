@@ -9,6 +9,9 @@ tower_defense.high_score.wave = storage:get_int("high_wave")
 tower_defense.high_score.tanks_left = storage:get_int("high_tanks_left")
 
 local function update_high_score(wave, tanks_left)
+	if not wave or not tanks_left then
+		return false
+	end
 	if wave > tower_defense.high_score.wave then
 		tower_defense.high_score.wave = wave
 		storage:set_int("high_wave", wave)

@@ -39,58 +39,6 @@ local function get_target(pos,flag)
 	end
 end
 
-
-function tower_defense.explode(base_pos,base_strength)
-	local visited = {}
-
-	local neighbors = {
-		{x=-1,y=0,z=0},
-		{x=1,y=0,z=0},
-		{x=0,y=-1,z=0},
-		{x=0,y=1,z=0},
-		{x=0,y=0,z=-1},
-		{x=0,y=0,z=1},
-	}
-
-	local function boom(pos,strength)
-		visited[pos.x.." "..pos.y.." "..pos.z] = true
-		local node = minetest.get_node(pos)
-		if node.name == "air" then
-			strength = strength - 5
-		else
-			local def = minetest.registered_nodes[node.name]
-			if def and def.groups and def.groups.health then
-				local meta = minetest.get_meta(pos)
-				local health = meta:get_int("td_health")
-				if health == 0 then health = def.groups.health end
-				health = health - strength
-				if health == 0 then
-					strength = 0
-					minetest.set_node(pos,{name="air"})
-				elseif health > 0 then
-					strength = 0
-					meta:set_int("td_health", health)
-				elseif health < 0 then
-					strength = math.abs(health)
-					minetest.set_node(pos,{name="air"})
-				end
-			else
-				strength = 0
-			end
-		end
-		if strength > 0 then
-			for _,neighbor in pairs(neighbors) do
-				local n_pos = vector.add(pos,neighbor)
-				if not visited[n_pos.x.." "..n_pos.y.." "..n_pos.z] then
-					boom(n_pos,strength)
-				end
-			end
-		end
-	end
-
-	boom(base_pos,base_strength)
-end
-
 local function fire(self,target)
 	if type(target) ~= "table" then
 		return
@@ -154,6 +102,7 @@ local function tank_on_activate(self, staticdata)
 	self.object:set_hp(self._health)
 	self.object:set_acceleration({x=0,y=-9.8,z=0})
 	self.object:set_animation({x=1,y=40})
+	self.object:set_armor_groups({armored = 100})
 end
 
 local function missile_on_step(self,_)
@@ -165,7 +114,7 @@ local function missile_on_step(self,_)
 	if target_dist > dist_traveled then
 		self._last_pos = pos
 	else
-		tower_defense.explode(self._target,self._strength)
+		tower_defense.explode_nodes(self._target,self._strength)
 		self.object:remove()
 	end
 end
@@ -205,7 +154,7 @@ local function register_tank(level)
 		_target = nil,
 		_attack_strength = 20*level,
 		_attack_speed = 1*level,
-		_health = 100*level,
+		_health = 100*level*level,
 		_movement_speed = 4/level,
 		_cannon_offset = 0.65*(1+(level-1)/4),
 		_frame = 1,
