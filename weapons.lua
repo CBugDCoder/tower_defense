@@ -65,18 +65,18 @@ minetest.register_tool("tower_defense:bazooka", {
 	inventory_image = "tower_defense_bazooka.png",
 	on_use = function(itemstack, user, _)
 		local player_pos = user:get_pos()
-		
+
 		local pos = vector.new(player_pos.x,player_pos.y,player_pos.z)
 		pos.y = pos.y+user:get_properties().eye_height
-		
+
 		local ent = minetest.add_entity(pos,"tower_defense:bazooka_missile")
-		
+
 		local name = user:get_player_name()
-		
+
 		local luaent = ent:get_luaentity()
-		
+
 		luaent._controller = name
-		
+
 		local dir = user:get_look_dir()
 		local rot = {
 			y = math.atan2(dir.x,-dir.z),
@@ -85,7 +85,9 @@ minetest.register_tool("tower_defense:bazooka", {
 		}
 		ent:set_rotation(rot)
 		ent:set_velocity(vector.multiply(dir,7))
-		
+
+		minetest.sound_play("td_missile_launch", {pos = pos, gain = 1.0, max_hear_distance = 60,}, true)
+
 		itemstack:add_wear(100)
 		return itemstack
 	end

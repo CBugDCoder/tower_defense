@@ -263,6 +263,7 @@ local function start_wave(game_id)
 		end
 	end
 
+	minetest.sound_play("td_siren", {pos = game.base_pos, gain = 1, max_hear_distance = 60}, true)
 	tower_defense.games[game_id].state = "wave"
 end
 

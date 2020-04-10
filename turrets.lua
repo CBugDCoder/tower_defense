@@ -38,6 +38,7 @@ minetest.register_entity("tower_defense:rifle_turret",{
 				local yaw = math.atan2(dir.x,-dir.z)
 				self.object:set_rotation({x=0,y=yaw,z=0})
 				ent:punch(self.object, 1, {damage_groups = {armored = 10},full_punch_interval = 0.5})
+				minetest.sound_play("td_gunshot", {pos = pos, gain = 1, max_hear_distance = 60,}, true)
 			end
 		end
 	end,
@@ -104,6 +105,7 @@ minetest.register_entity("tower_defense:machine_gun_turret",{
 				local yaw = math.atan2(dir.x,-dir.z)
 				self.object:set_rotation({x=0,y=yaw,z=0})
 				ent:punch(self.object, 1, {damage_groups = {armored = 5},full_punch_interval = 0.5})
+				minetest.sound_play("td_gunshot", {pos = pos, gain = 1, max_hear_distance = 60,}, true)
 			end
 		end
 	end,
@@ -211,6 +213,7 @@ minetest.register_entity("tower_defense:cannon_turret",{
 				luaent._last_pos = vector.add(pos,{x=0,y=3/8,z=0})
 				luaent._target = e_pos
 				luaent._strength = 500
+				minetest.sound_play("td_missile_launch", {pos = pos, gain = 1.0, max_hear_distance = 60,}, true)
 			end
 		end
 	end,

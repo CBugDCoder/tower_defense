@@ -58,6 +58,7 @@ local function fire(self,target)
 	luaent._last_pos = pos
 	luaent._target = target
 	luaent._strength = self._attack_strength
+	minetest.sound_play("td_missile_launch", {pos = pos, gain = 1.0, max_hear_distance = 60,}, true)
 end
 
 local function aim(self)

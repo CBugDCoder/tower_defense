@@ -1,3 +1,31 @@
+local function explosion_effects(pos,strength)
+	minetest.sound_play("td_explosion", {pos = pos, gain = strength/100, max_hear_distance = 60,}, true)
+	minetest.add_particlespawner({
+		amount = 20,
+		time = 0.1,
+		minpos = vector.add(pos,{x=-0.5,y=-0.5,z=-0.5}),
+		maxpos = vector.add(pos,{x=0.5,y=0.5,z=0.5}),
+		minvel = {x=-2,y=-2,z=-2},
+		maxvel = {x=2,y=2,z=2},
+		minacc = {x=0,y=0,z=0},
+		maxacc = {x=0,y=0,z=0},
+		minexptime = 0.5,
+		maxexptime = 1,
+		minsize = 5,
+		maxsize = 10,
+		collisiondetection = false,
+		collision_removal = false,
+		object_collision = false,
+		texture = "tower_defense_explosion_smoke.png",
+		animation = {
+			type = "vertical_frames",
+			aspect_w = 16,
+			aspect_h = 16,
+			length = 1,
+		},
+	})
+end
+
 function tower_defense.explode_nodes(base_pos,base_strength)
 	local visited = {}
 
@@ -45,8 +73,8 @@ function tower_defense.explode_nodes(base_pos,base_strength)
 			end
 		end
 	end
-
 	boom(base_pos,base_strength)
+	explosion_effects(base_pos,base_strength)
 end 
 
 function tower_defense.explode_tanks(pos,strength)
@@ -61,4 +89,5 @@ function tower_defense.explode_tanks(pos,strength)
 			end
 		end
 	end
+	explosion_effects(pos,strength)
 end
