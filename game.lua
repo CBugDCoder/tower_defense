@@ -140,8 +140,7 @@ function tower_defense.join_game(player, game_id)
 		for i = 1,8*4 do
 			inv:set_stack("main",i,ItemStack())
 		end
-		local form = tower_defense.shop.get_inventory_formspec()
-		player:set_inventory_formspec(form)
+		tower_defense.shop.set_inventory_formspec(player)
 		player:set_pos(vector.add(tower_defense.games[game_id].base_pos,{x=0,z=0,y=1}))
 	else
 		return false, "already in game or player does not exist"
@@ -162,7 +161,7 @@ function tower_defense.leave_game(player)
 				break
 			end
 		end
-		--reset_inventory_formspec(player)
+		tower_defense.shop.reset_inventory_formspec(player)
 	else
 		return false, "not in game"
 	end

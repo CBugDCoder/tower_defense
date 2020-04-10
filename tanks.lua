@@ -97,6 +97,11 @@ local function tank_on_step(self, dtime)
 	aim(self)
 end
 
+local function tank_on_death(self,_)
+	if self._game_id == nil then return nil end
+	tower_defense.games[self._game_id].cash = tower_defense.games[self._game_id].cash + self._health*5
+end
+
 local function tank_on_activate(self, staticdata)
 	self._game_id = tonumber(staticdata)
 	self.object:set_hp(self._health)
@@ -142,6 +147,7 @@ local function register_tank(level)
 		visual_size = {x=1+(level-1)/4,y=1+(level-1)/4},
 		on_step = tank_on_step,
 		on_activate = tank_on_activate,
+		on_death = tank_on_death,
 		static_save = false,
 		physical = true,
 		collisionbox = {-0.5, 0.0, -0.5, 0.5, 1.0, 0.5},
