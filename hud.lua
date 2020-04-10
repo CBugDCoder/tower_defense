@@ -29,7 +29,7 @@ function tower_defense.hud.initalize(player)
 			position = {x=1,y=0},
 			offset = {x=-225,y=40}
 		})
-		
+
 		tower_defense.players[name].hud = {
 			scoreboard = scoreboard,
 			wave = wave,
@@ -44,10 +44,10 @@ function tower_defense.hud.update(player)
 		local game_id = tower_defense.players[name].game
 		local game = tower_defense.games[game_id]
 		if game.state == "wave" then
-			player:hud_change(tower_defense.players[name].hud.wave, "text", 
+			player:hud_change(tower_defense.players[name].hud.wave, "text",
 				"Wave " .. game.wave .. ".   Tanks left: " .. game.tanks)
 		else
-			player:hud_change(tower_defense.players[name].hud.wave, "text", 
+			player:hud_change(tower_defense.players[name].hud.wave, "text",
 				"Wave " .. game.wave .. " Starts in " .. string.format("%.1d:%.2d", math.floor(game.timer/60), game.timer%60))
 		end
 		player:hud_change(tower_defense.players[name].hud.cash, "text", "You have: $" .. game.cash)

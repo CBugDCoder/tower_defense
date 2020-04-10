@@ -31,6 +31,8 @@ function tower_defense.shop.set_inventory_formspec(player)
 		"image_button[5,4.5;1,1;heart.png;shop_heal_flags; ]"..
 		"tooltip[shop_heal_flags;Heal Flags]"..
 		"label[5,5.5;Heal Flags \n$10000]"..
+		"button[7.25,4.5;2,1;shop_start_wave;Start Wave]"..
+		"label[7.25,5.5;Start Wave \n$100]"..
 
 		"list[current_player;main;0.5,6.5;8,4;]"
 	player:set_inventory_formspec(form)
@@ -48,6 +50,7 @@ local item_prices = {
 	lava_sword = 500,
 	bazooka = 5000,
 	heal_flags = 10000,
+	start_wave = 100,
 }
 
 local function purchase(player, item)
@@ -64,6 +67,11 @@ local function purchase(player, item)
 			meta:set_string("td_health","")
 		end
 		was_purchased = true
+	elseif item == "start_wave" then
+		if game.state == "waiting_for_wave" then
+			tower_defense.games[game_id].timer = 0
+			was_purchased = true
+		end
 	else
 		local inv = player:get_inventory()
 		local itemstack = ItemStack("tower_defense:"..item)
@@ -79,7 +87,7 @@ end
 
 minetest.register_on_player_receive_fields(function(player,formname,fields)
 	if formname ~= "" then return end
-	
+
 	local name = player:get_player_name()
 	if tower_defense.players[name] and tower_defense.players[name].in_game then
 		if fields.shop_wood_barricade then
@@ -104,6 +112,8 @@ minetest.register_on_player_receive_fields(function(player,formname,fields)
 			purchase(player,"bazooka")
 		elseif fields.shop_heal_flags then
 			purchase(player,"heal_flags")
+		elseif fields.shop_start_wave then
+			purchase(player,"start_wave")
 		end
 		return true
 	else

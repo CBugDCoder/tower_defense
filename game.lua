@@ -34,6 +34,7 @@ local function update_high_score(wave, tanks_left)
 end
 
 local function get_base_pos(id)
+	id = id % (60*60)
 	local x = ((id/60)-(math.floor(id/60)))*60
 	local z = math.floor(id/60)
 	x = x*1000-30000
@@ -90,22 +91,32 @@ local function game_emerge_generate(_,_,callbacks_remaining, game_id)
 	end
 end
 
-function tower_defense.new_game(map_type)
+function tower_defense.new_game(difficulty)
 	local game = {}
 	local id = latest_game+1
 	latest_game = id
 	game.base_pos = get_base_pos(id)
 	storage:set_int("last_game", id)
-	if map_type == "random" or map_type == nil then
+	if difficulty == "hard" then
 		game.flags = {}
-		game.flags[1] = {x=math.random(-10,10),y=1,z=math.random(-10,10)}
+		game.flags[1] = {x=math.random(-9,9),y=1,z=math.random(-9,9)}
+		game.cash = 5000
+	elseif difficulty == "medium" then
+		game.flags = {}
+		game.flags[1] = {x=math.random(-9,9),y=1,z=math.random(-9,9)}
+		game.flags[2] = {x=math.random(-9,9),y=1,z=math.random(-9,9)}
+		game.cash = 7500
+	else
+		game.flags = {}
+		game.flags[1] = {x=math.random(-9,9),y=1,z=math.random(-9,9)}
+		game.flags[2] = {x=math.random(-9,9),y=1,z=math.random(-9,9)}
+		game.flags[3] = {x=math.random(-9,9),y=1,z=math.random(-9,9)}
+		game.cash = 10000
 	end
-	game.cash = 10000
 	game.state = "generating"
 	game.timer = 0
 	game.players = {}
 	game.tanks = 0
-	print(dump(game))
 	tower_defense.games[id] = game
 	minetest.emerge_area(
 		vector.new(game.base_pos.x-50,game.base_pos.y-50,game.base_pos.z-50),
@@ -127,7 +138,7 @@ function tower_defense.join_game(player, game_id)
 		end
 		if tower_defense.games[game_id].state == "waiting_for_players" then
 			tower_defense.games[game_id].state = "waiting_for_wave"
-			tower_defense.games[game_id].timer = 10
+			tower_defense.games[game_id].timer = 240
 			tower_defense.games[game_id].wave = 1
 		end
 		tower_defense.players[name].in_game = true
@@ -151,6 +162,7 @@ function tower_defense.leave_game(player)
 	local name = player:get_player_name()
 	if tower_defense.players[name] and tower_defense.players[name].in_game == true then
 		local game_id = tower_defense.players[name].game
+		tower_defense.players[name].in_game = false
 		local inv = player:get_inventory()
 		inv:set_list("main", inv:get_list("main_td_backup"))
 		inv:set_size("main_td_backup", 0)
@@ -167,7 +179,7 @@ function tower_defense.leave_game(player)
 	end
 end
 
-function tower_defense.end_game(id,reason)
+function tower_defense.end_game(id,_)
 	local game = tower_defense.games[id]
 	if game == nil then
 		return false, "Invalid game id"
@@ -181,7 +193,8 @@ function tower_defense.end_game(id,reason)
 	end
 	local objects = minetest.get_objects_inside_radius(game.base_pos,150)
 	for _,object in ipairs(objects) do
-		if object and object:get_luaentity() and (object:get_luaentity()._is_tank or object:get_luaentity().name == "tower_defense:missile") then
+		if object and object:get_luaentity() and
+			(object:get_luaentity()._is_tank or object:get_luaentity().name == "tower_defense:missile") then
 			object:remove()
 		end
 	end
@@ -345,7 +358,7 @@ minetest.register_globalstep(function(dtime)
 				end
 				if game.tanks == 0 then
 					game.wave = game.wave + 1
-					game.timer = 20 --240
+					game.timer = 240
 					game.state = "waiting_for_wave"
 				end
 				local num_players = 0
@@ -362,16 +375,22 @@ minetest.register_globalstep(function(dtime)
 	end
 end)
 
+minetest.register_privilege("tower_defense", {
+	description = "Allows creating and ending tower defense games.",
+	give_to_singleplayer = true,
+	give_to_admin = true,
+})
+
 minetest.register_chatcommand("new_td_game",{
-	privs = {interact = true},
+	privs = {tower_defense = true},
+	params = "<difficulty>",
 	description = "Create a new tower defense game",
-	func = function(name,_)
-		local success, id = tower_defense.new_game("random")
+	func = function(name,param)
+		local success, id = tower_defense.new_game(param)
 		if success then
 			minetest.chat_send_player(name, "Game created.  ID: " .. tostring(id))
 		end
 	end,
-
 })
 
 minetest.register_chatcommand("join_td_game",{
@@ -394,7 +413,7 @@ minetest.register_chatcommand("leave_td_game",{
 })
 
 minetest.register_chatcommand("end_td_game",{
-	privs = {interact = true},
+	privs = {tower_defense = true},
 	params = "<game id>",
 	description = "End a tower defense game",
 	func = function(_,param)

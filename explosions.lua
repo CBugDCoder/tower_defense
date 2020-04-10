@@ -75,7 +75,7 @@ function tower_defense.explode_nodes(base_pos,base_strength)
 	end
 	boom(base_pos,base_strength)
 	explosion_effects(base_pos,base_strength)
-end 
+end
 
 function tower_defense.explode_tanks(pos,strength)
 	local ents = minetest.get_objects_inside_radius(pos,strength/25)

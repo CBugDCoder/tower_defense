@@ -67,7 +67,7 @@ minetest.register_node("tower_defense:rifle_turret", {
 			end
 		end
 	end
-}) 
+})
 
 ----Machine Gun----
 minetest.register_entity("tower_defense:machine_gun_turret",{
@@ -134,7 +134,7 @@ minetest.register_node("tower_defense:machine_gun_turret", {
 			end
 		end
 	end
-}) 
+})
 
 
 
@@ -149,7 +149,8 @@ minetest.register_entity("tower_defense:turret_missile",{
 	on_step = function (self,_)
 		if type(self._target) ~= "table" or type(self._last_pos) ~= "table" then return end
 
-		local target_dist = vector.distance(self._last_pos,self._target)-0.5 --Subtract 0.5 here to get the edge of the node rather then the center.
+		local target_dist = vector.distance(self._last_pos,self._target)-0.5
+		--Subtract 0.5 here to get the edge rather then the center.
 		local pos = self.object:get_pos()
 		local dist_traveled = vector.distance(self._last_pos,pos)
 		if target_dist > dist_traveled then
@@ -159,7 +160,7 @@ minetest.register_entity("tower_defense:turret_missile",{
 			self.object:remove()
 		end
 	end,
-	
+
 	--Variables
 	_strength = 0,
 	_target = nil,
@@ -242,7 +243,7 @@ minetest.register_node("tower_defense:cannon_turret", {
 			end
 		end
 	end
-}) 
+})
 
 --Land Mine
 minetest.register_node("tower_defense:land_mine", {

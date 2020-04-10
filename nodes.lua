@@ -27,15 +27,6 @@ minetest.register_node("tower_defense:barrier", {
 
 --Flag
 minetest.register_node("tower_defense:flag", {
-	tiles = {"default_dirt.png"},
-	drawtype = "nodebox",
-	node_box = {
-		type = "fixed",
-		fixed = {
-			{-5/16,-8/16,-1/16,-3/16,8/16,1/16},
-			{-3/16,1/16,-1/16,6/16,7/16,1/16},
-		}
-	},
 	tiles = {
 		"tower_defense_flag_top.png^[transform1",
 		"tower_defense_flag_top.png^[transform1",
@@ -43,6 +34,14 @@ minetest.register_node("tower_defense:flag", {
 		"tower_defense_flag_back.png",
 		"tower_defense_flag_side.png^[transform4",
 		"tower_defense_flag_side.png",
+	},
+	drawtype = "nodebox",
+	node_box = {
+		type = "fixed",
+		fixed = {
+			{-5/16,-8/16,-1/16,-3/16,8/16,1/16},
+			{-3/16,1/16,-1/16,6/16,7/16,1/16},
+		}
 	},
 	description = "Flag",
 	paramtype = "light",

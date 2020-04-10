@@ -114,7 +114,8 @@ end
 local function missile_on_step(self,_)
 	if type(self._target) ~= "table" or type(self._last_pos) ~= "table" then return end
 
-	local target_dist = vector.distance(self._last_pos,self._target)-0.5 --Subtract 0.5 here to get the edge of the node rather then the center.
+	local target_dist = vector.distance(self._last_pos,self._target)-0.5
+	--Subtract 0.5 here to get the edge of the node rather then the center.
 	local pos = self.object:get_pos()
 	local dist_traveled = vector.distance(self._last_pos,pos)
 	if target_dist > dist_traveled then
@@ -133,7 +134,7 @@ minetest.register_entity("tower_defense:missile", {
 	static_save = false,
 	pointable = false,
 	on_step = missile_on_step,
-	
+
 	--Variables
 	_strength = 0,
 	_target = nil,

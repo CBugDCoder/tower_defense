@@ -26,7 +26,7 @@ minetest.register_entity("tower_defense:bazooka_missile", {
 		if type(self._controller) ~= "string" then return end
 		local player = minetest.get_player_by_name(self._controller)
 		if not player then return end
-		
+
 		local player_pos = player:get_pos()
 		player_pos.y = player_pos.y+player:get_properties().eye_height
 		local pos = self.object:get_pos()
@@ -88,7 +88,7 @@ minetest.register_tool("tower_defense:bazooka", {
 
 		minetest.sound_play("td_missile_launch", {pos = pos, gain = 1.0, max_hear_distance = 60,}, true)
 
-		itemstack:add_wear(100)
+		itemstack:add_wear(1000)
 		return itemstack
 	end
 })
