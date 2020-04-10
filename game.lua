@@ -292,6 +292,19 @@ function tower_defense.get_tanks_in_game(game_id)
 	return count
 end
 
+minetest.register_on_respawnplayer(function(player)
+	local name = player:get_player_name()
+	if tower_defense.players[name] and tower_defense.players[name].in_game then
+		local base_pos = tower_defense.games[tower_defense.players[name].game].base_pos
+		-- The minetest.after ensures that the respawn is not overridden
+		minetest.after(0,function(name,base_pos)
+			local player = minetest.get_player_by_name(name)
+			player:set_pos(vector.add(base_pos,{x=0,y=1,z=0}))
+		end, name, base_pos)
+		return true
+	end
+end)
+
 minetest.register_on_joinplayer(function(player)
 	local name = player:get_player_name()
 	tower_defense.players[name] = {in_game = false, game = nil}
