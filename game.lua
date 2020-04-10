@@ -12,6 +12,10 @@ local function update_high_score(wave, tanks_left)
 	if not wave or not tanks_left then
 		return false
 	end
+	-- Waiting for wave so therefore you have only completed up to the prior wave.
+	if tanks_left == 0 then
+		wave = wave - 1
+	end
 	if wave > tower_defense.high_score.wave then
 		tower_defense.high_score.wave = wave
 		storage:set_int("high_wave", wave)
@@ -131,10 +135,10 @@ function tower_defense.join_game(player, game_id)
 	local name = player:get_player_name()
 	if tower_defense.players[name] and tower_defense.players[name].in_game == false then
 		if tower_defense.games[game_id] == nil then
-			return false, "invalid game id"
+			return false, "The game id is invalid."
 		end
 		if tower_defense.games[game_id].state == "generating" then
-			return false, "game still generating"
+			return false, "The game "..game_id.." is still generating"
 		end
 		if tower_defense.games[game_id].state == "waiting_for_players" then
 			tower_defense.games[game_id].state = "waiting_for_wave"
@@ -154,7 +158,11 @@ function tower_defense.join_game(player, game_id)
 		tower_defense.shop.set_inventory_formspec(player)
 		player:set_pos(vector.add(tower_defense.games[game_id].base_pos,{x=0,z=0,y=1}))
 	else
-		return false, "already in game or player does not exist"
+		if name then
+			return false, "You are already in a game."
+		else
+			return false, "You do not exist."
+		end
 	end
 end
 
@@ -175,14 +183,14 @@ function tower_defense.leave_game(player)
 		end
 		tower_defense.shop.reset_inventory_formspec(player)
 	else
-		return false, "not in game"
+		return false, "You are not in a game."
 	end
 end
 
 function tower_defense.end_game(id,_)
 	local game = tower_defense.games[id]
 	if game == nil then
-		return false, "Invalid game id"
+		return false, "The game id is invalid."
 	end
 	local new_hs = update_high_score(game.wave,tower_defense.get_tanks_in_game(id))
 	for name,_ in pairs(game.players) do
@@ -432,4 +440,12 @@ minetest.register_chatcommand("end_td_game",{
 	func = function(_,param)
 		return tower_defense.end_game(tonumber(param), "force")
 	end,
+})
+
+minetest.register_chatcommand("td_high_score", {
+	privs = {interact = true},
+	description = "Show current High Score",
+	func = function(_,_)
+		return true, "The current high score is wave "..tower_defense.high_score.wave.." with "..tower_defense.high_score.tanks_left.." tanks left."
+	end
 })
