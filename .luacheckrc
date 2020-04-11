@@ -8,6 +8,7 @@ read_globals = {
 	"ItemStack",
 	"Settings",
 	"unpack",
+	"sfinv",
 	table = {
 		fields = {
 			"copy",

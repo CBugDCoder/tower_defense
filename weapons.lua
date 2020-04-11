@@ -10,6 +10,7 @@ minetest.register_tool("tower_defense:lava_sword", {
 		full_punch_interval = 1,
 		range = 8,
 	},
+	groups = {not_in_creative_inventory = 1},
 })
 
 ---------------
@@ -63,6 +64,7 @@ minetest.register_entity("tower_defense:bazooka_missile", {
 minetest.register_tool("tower_defense:bazooka", {
 	description = "Bazooka",
 	inventory_image = "tower_defense_bazooka.png",
+	groups = {not_in_creative_inventory = 1},
 	on_use = function(itemstack, user, _)
 		local player_pos = user:get_pos()
 
