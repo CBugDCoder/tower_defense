@@ -53,8 +53,8 @@ minetest.register_node("tower_defense:flag", {
 ------------------
 ----Barricades----
 ------------------
-minetest.register_node("tower_defense:wooden_barricade",{
-	description = "Wooden Barricade",
+minetest.register_node("tower_defense:wood_barricade",{
+	description = "Wood Barricade",
 	tiles = {"default_wood.png"},
 	groups = {not_in_creative_inventory = 1, oddly_breakable_by_hand = 3, health = 50}
 })

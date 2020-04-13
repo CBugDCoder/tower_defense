@@ -70,7 +70,7 @@ sfinv.register_page("tower_defense:shop", {
 		end,
 		get = function(_, player, context)
 			return sfinv.make_formspec(player, context,
-				"item_image_button[0.5,0.5;1,1;tower_defense:wooden_barricade;shop_wood_barricade; ]"..
+				"item_image_button[0.5,0.5;1,1;tower_defense:wood_barricade;shop_wood_barricade; ]"..
 				"label[0.5,1.5;Wood\n$100]"..
 				"item_image_button[2.75,0.5;1,1;tower_defense:stone_barricade;shop_stone_barricade; ]"..
 				"label[2.75,1.5;Stone\n$200]"..
